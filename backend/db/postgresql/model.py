@@ -1,0 +1,93 @@
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
+
+class Client(db.Model):
+    __tablename__ = "Client"
+
+    id_c = db.Column(db.String(10), primary_key=True, nullable=False)
+    name_c = db.Column(db.String(20), nullable=False)
+    email = db.Column(db.String(20), nullable=False)
+    phone = db.Column(db.String(15))
+    password = db.Column(db.String(128), nullable=False)
+    favorite_c = db.relationship('Favorite', backref='client_fav', lazy='dynamic', foreign_keys='Favorite.id_c')
+    bill_c = db.relationship('Bill', backref='client_bill', lazy='dynamic', foreign_keys='Bill.id_c')
+
+    def __init__(self, id_c, name_c, email, phone, password):
+        self.id_c = id_c
+        self.name_c = name_c
+        self.email = email
+        self.phone = phone
+        self.password = password
+
+class Product(db.Model):
+    __tablename__ = "Product"
+
+    id_p = db.Column(db.String(2), primary_key=True, nullable=False)
+    name_p = db.Column(db.String(40), nullable=False)
+    bio_p = db.Column(db.String(200))
+    appearance_p = db.relationship('Appearance', backref='category', lazy='dynamic', foreign_keys='Appearance.id_p')
+    
+    def __init__(self, id_p, name_p, bio_p):
+        self.id_p = id_p
+        self.name_p = name_p
+        self.bio_p = bio_p
+
+class Appearance(db.Model):
+    __tablename__ = "Appearance"
+
+    id_a = db.Column(db.String(2), primary_key=True, nullable=False)
+    name_a = db.Column(db.String(40), nullable=False)
+    bio_a = db.Column(db.String(200))
+    price = db.Column(db.Float(), nullable=False)
+    id_p = db.Column(db.String(2), db.ForeignKey('Product.id_p')) 
+    favorite_a = db.relationship('Favorite', backref='appearance_fav', lazy='dynamic', foreign_keys='Favorite.id_a')
+    bill_a = db.relationship('Bill', backref='appearance_bill', lazy='dynamic', foreign_keys='Bill.id_a')
+
+    def __init__(self, id_a, name_a, bio_p, price, id_p):
+        self.id_a = id_a
+        self.name_a = name_a
+        self.bio_a = bio_a
+        self.price = price
+        self.id_p = id_p
+
+class Favorite(db.Model):
+    __tablename__ = "Favorite"
+
+    id_f = db.Column(db.String(2), primary_key=True, nullable=False)
+    id_c = db.Column(db.String(10), db.ForeignKey('Client.id_c'))
+    id_a = db.Column(db.String(2), db.ForeignKey('Appearance.id_a'))
+
+    def __init__(self, id_f, id_c, id_a):
+        self.id_f = id_f
+        self.id_c = id_c
+        self.id_a = id_a
+
+
+class Bill(db.Model):
+    __tablename__ = "Bill"
+
+    id_b = db.Column(db.String(5), primary_key=True, nullable=False)
+    id_c = db.Column(db.String(10), db.ForeignKey('Client.id_c'))
+    id_a = db.Column(db.String(2), db.ForeignKey('Appearance.id_a'))
+    quantity = db.Column(db.Integer, nullable=False)
+    total = db.Column(db.Float(), nullable=False)
+    date_b = db.Column(db.DateTime, nullable=False)
+
+    def __init__(self, id_b, id_c, id_a, quantity, total, date_b):
+        self.id_b = id_b
+        self.id_c = id_c
+        self.id_a = id_a
+        self.quantity = quantity
+        self.total = total
+        self.date_b = date_b
+
+class History(db.Model):
+    __tablename__ = "History"
+
+    id_h = db.Column(db.String(2), primary_key=True, nullable=False)
+    id_b = db.Column(db.String(5), db.ForeignKey('Bill.id_b'))
+
+    def __init(self, id_h, id_b):
+        self.id_h = id_h
+        self.id_b = id_b
