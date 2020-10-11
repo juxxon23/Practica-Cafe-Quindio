@@ -2,6 +2,7 @@ from marshmallow import validate, Schema, fields
 
 
 class ClientSignin(Schema):
+    role = fields.Str(required=True, validate=validate.Length(min=4, max=20))
     name_c = fields.Str(required=True, validate=validate.Length(min=3, max=20))
     email = fields.Str(
         required=True, validate=validate.Length(min=13, max=130))

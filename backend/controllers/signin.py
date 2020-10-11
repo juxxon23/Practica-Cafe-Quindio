@@ -14,6 +14,7 @@ class Signin(MethodView):
         try:
             # Se reciben los datos y se validan
             client_signin = request.get_json()
+            client_signin['role'] = "client"
             errors = client_schema.validate(client_signin)
             if errors:
                 return jsonify({"st": errors}), 403
@@ -29,7 +30,6 @@ class Signin(MethodView):
                 print("elif")
                 return jsonify({"st": "error"}), 403
         except:
-            print("except")
-            return jsonify({"st": "error"})
+            return jsonify({"st": "error"}), 403
         finally:
             disconnect = cm.disconnect_db("cafe-db")

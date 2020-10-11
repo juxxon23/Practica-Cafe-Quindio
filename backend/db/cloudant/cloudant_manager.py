@@ -87,12 +87,14 @@ class CloudantManager:
         except:
             return "error"
 
-    # Consulta individual por id del documento
-    def get_query_by(self, db, id_doc):
+    # Consulta individual por llave y valor del documento
+    def get_query_by(self, db, value_i, key_i):
         try:
+            list_docs = []
             docs = CloudantManager.get_all_docs(db)
             for doc in docs:
-                if id_doc == doc['id']:
-                    return "ok"
+                if doc['doc'].get(key_i) == value_i:
+                    list_docs.append(doc)
+            return list_docs
         except:
             return "error"
