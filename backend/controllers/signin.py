@@ -2,7 +2,7 @@ from flask.views import MethodView
 from flask import request, jsonify
 from marshmallow import validate
 from validators.client_val import ClientSignin
-from helpers.cloudant_manager import cloudantManager
+from db.cloudant.cloudant_manager import cloudantManager
 
 user_schema = ClientSignin()
 cm = cloudantManager()
