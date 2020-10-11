@@ -12,7 +12,7 @@ class Signin(MethodView):
         try:
             # Se reciben los datos y se validan
             client_signin = request.get_json()
-            errors = ClientSignin.validate(ClientSignin)
+            errors = ClientSignin.validate(client_signin)
             if errors:
                 return jsonify({"st":errors}), 403
             # Se conecta a la db y se agrega el doc
