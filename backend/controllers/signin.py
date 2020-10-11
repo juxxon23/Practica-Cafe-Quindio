@@ -4,28 +4,17 @@ from marshmallow import validate
 from helpers.crypt import Crypt
 from validators.client_val import ClientSignin
 from db.cloudant.cloudant_manager import CloudantManager
-<<<<<<< HEAD
 
 client_schema = ClientSignin()
 cm = CloudantManager()
 crypt = Crypt()
-
-=======
-
-user_schema = ClientSignin()
-cm = CloudantManager()
->>>>>>> eb47fae85c2885803c5c18e653929ba64227deb6
 
 class Signin(MethodView):
     def post(self):
         try:
             # Se reciben los datos y se validan
             client_signin = request.get_json()
-<<<<<<< HEAD
             errors = client_schema.validate(client_signin)
-=======
-            errors = ClientSignin.validate(client_signin)
->>>>>>> eb47fae85c2885803c5c18e653929ba64227deb6
             if errors:
                 return jsonify({"st": errors}), 403
             # Se conecta a la db y se agrega el doc
