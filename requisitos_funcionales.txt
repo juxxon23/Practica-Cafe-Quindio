@@ -1,0 +1,24 @@
+Empresa cafe del Quindio
+
+Producto: Cafe ADSI 
+Presentacion: Cafe ADSI Tradicional, cafe ADSI Gourmet
+
+Se distribuye a establecimientos comerciales en los municipios del departamento
+
+Sitio web disponible para todo el mundo (Espanol - Ingles)
+
+-------------------------------------
+
+Requisitos Funcionales:
+.Permitir el registro del cliente
+.Permitir iniciar sesion
+.Permitir la visualizacion de los productos
+.Permitir la visualizacion de las presentaciones
+.Permitir la compra de las presentaciones
+
+NM9
+1.cliente: registro, login.
+3.perfil del cliente: consulta de pedidos eliminarlos, actualizar, cambiar.
+2.pedidos del producto, 2 tipos de productos: añadir pedido, eliminar pedido, actualizar pedido, consultar pedido.
+
+

@@ -1,0 +1,44 @@
+# Base de datos
+__db_name__ = "cafe_db"
+
+# Cliente
+__tablename__ = "Client"
+id = String(10) PK
+name_c = String(20)
+email = String(20)
+phone = String(15)
+password = String(128)
+
+# Producto
+__tablename__ = "Product"
+id = String(2) PK
+name_p = String(40)
+bio_p = String(200)
+
+# Presentacion
+__tablename__ = "Appearance"
+id = String(2) PK
+name_a = String(40)
+bio_a = String(200)
+price = Float()
+id_p = String(2) FK
+
+# Favoritos
+__tablename__ = "Favorite"
+id = String(2) PK
+id_c = String(10) FK
+id_a = String(2) FK
+
+# Factura
+__tablename__ = "Bill"
+id = String(5) PK
+id_c = String(10) FK
+id_a = String(2) FK
+quantity = Int()
+total = Float()
+
+# Historial de facturas
+__tablename__ = "History"
+id = String(2) PK
+id_c = String(10) FK
+id_b = String(5) FK
