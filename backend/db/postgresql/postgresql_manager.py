@@ -1,6 +1,7 @@
 from model import db
 from sqlalchemy.exc import SQLAlchemyError
 
+
 class PostgresqlManager:
     def add(self, *args):
         try:
@@ -12,7 +13,7 @@ class PostgresqlManager:
             return e
         except:
             return 'error'
-        
+
     def update(self):
         try:
             db.session.commit()
@@ -31,5 +32,3 @@ class PostgresqlManager:
             return e
         except:
             return 'error'
-
-
