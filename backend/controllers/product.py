@@ -43,4 +43,16 @@ class Product(MethodView):
         finally:
             disconnect = cm.disconnect_db("cafe-db")
 
+    #actualizar producto
+    def put(self):
+        try:
+            cm.connect_service()
+            my_db = cm.connect_db('cafe-db')
+            product = cm.get_query_by(my_db, 'product', 'role')
+            actualizar_product = product.
+        except expression as identifier:
+            pass
+        finally:
+            pass
+
         
