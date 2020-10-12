@@ -1,4 +1,4 @@
-from model import db
+from db.postgresql.model import db
 from sqlalchemy.exc import SQLAlchemyError
 
 
@@ -32,3 +32,13 @@ class PostgresqlManager:
             return e
         except:
             return 'error'
+
+    def get_all(self, table_name):
+        try:
+            data = db.session.query(table_name).all()
+            return data
+        except SQLAlchemyError as e:
+            return e
+        except:
+            return 'error'
+

@@ -2,8 +2,14 @@ from flask.views import MethodView
 #from validators.product import ProductRegister
 from db.cloudant.cloudant_manager import CloudantManager
 from flask import jsonify, request
+from helpers.db_parser import DBP
+from db.postgresql.postgresql_manager import PostgresqlManager
+from db.postgresql.model import Client
 
 cm = CloudantManager()
+my_dbp = DBP()
+pm = PostgresqlManager()
+
 
 class Product(MethodView):
     # Lista de productos
@@ -11,7 +17,8 @@ class Product(MethodView):
         try:
             cm.connect_service()
             my_db = cm.connect_db('cafe-db')
-            products = cm.get_query_by(my_db, 'product', 'role')
+            sdb = my_dbp.sync(my_db, cm)
+            products = cm.get_query_by(my_db, '2', 'role')
             for i in range(len(products)):
                 products[i] = {
                     'name_a': products[i]['doc']['name_a'],
@@ -19,40 +26,66 @@ class Product(MethodView):
                     'price': products[i]['doc']['price'],
                     'id_p': products[i]['doc']['id_p'],
                 }
-            return jsonify({'products':products}), 200
+            disconnect = cm.disconnect_db("cafe-db")
+            return jsonify({'products': products, 'sync':sdb}), 200
         except:
-            return jsonify({'st':'error'}), 403
+            return jsonify({'st': 'error'}), 403
         finally:
-            disconnect = cm.disconnect_db('cafe-db')
-        
+            pass
+
     # agregar producto
     def post(self):
         try:
             product_register = request.get_json()
-            product_register['role'] = 'product' 
+            product_register['role'] = '2'
             cm.connect_service()
             my_db = cm.connect_db('cafe-db')
+            sdb = my_dbp.sync(my_db, cm)
             doc_msg = cm.add_doc(my_db, product_register)
+            disconnect = cm.disconnect_db("cafe-db")
             if doc_msg == "ok":
-                return jsonify({"st": "ok"}), 200
+                return jsonify({"st": "ok", "sync": sdb}), 200
             elif doc_msg == "error":
                 print("elif")
-                return jsonify({"st": "error"}), 403
+                return jsonify({"st": "error", "sync": sdb}), 403
         except:
             return jsonify({"st": "error"}), 403
         finally:
-            disconnect = cm.disconnect_db("cafe-db")
-
-    #actualizar producto
+            pass
+    
+    # Actualizar producto
     def put(self):
         try:
+            product_change = request.get_json()
+            print(product_change)
             cm.connect_service()
             my_db = cm.connect_db('cafe-db')
-            product = cm.get_query_by(my_db, 'product', 'role')
-            actualizar_product = product.
-        except expression as identifier:
-            pass
+            sdb = 'a'#my_db.sync(my_db, cm)
+            doc_msg = cm.update_doc(my_db,"email","vicente@mail.com",password="password23")
+            disconnect = cm.disconnect_db("cafe-db")
+            if doc_msg == "ok":
+                return jsonify({"st":"ok", "sync": sdb}), 200
+            elif doc_msg == "error":
+                print("hola")
+                return jsonify({"st": "error", "sync": sdb}), 403
+        except:
+            return jsonify({"st":"error"}), 403
         finally:
             pass
 
-        
+    # Eliminar producto
+
+
+"""
+new_client = Client(
+        id_c=product_register['id'],
+        name_c=product_register['name_c'],
+        email=product_register['email'],
+        phone=product_register['phone'],
+        password=product_register['password'],
+        role_c=product_register['role'])
+message = pm.add(new_client)
+print(message)
+return message
+"""
+

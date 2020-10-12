@@ -59,12 +59,15 @@ class CloudantManager:
             return "error"
 
     # Actualizar documentos
-    def update_db(self, db, id_doc, **kwargs):
+    def update_doc(self, db, key_i, value_i, **kwargs):
         try:
-            doc_temp = db[id_doc]
-            for key, value in kwargs.items():
-                doc_temp[key] = value
-            doc_temp.save()
+            docs = CloudantManager.get_all_docs(db)
+            for doc in docs:
+                if doc['doc'].get(key_i) == value_i:
+                    document = db[doc['id']]
+                    for key, value in kwargs.items():
+                        document[key] = value
+                    document.save() 
             return "ok"
         except:
             return "error"

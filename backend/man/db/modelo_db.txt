@@ -41,3 +41,14 @@ total = Float()
 __tablename__ = "History"
 id_h = String(2) PK
 id_b = String(5) FK
+
+# Rol
+__tablename__ = "Role"
+id_r = String(2) PK
+name_r = String(10)
+# : param name_r: client (1)
+# : param name_r: product (2)
+# : param name_r: appearance (3)
+# : param name_r: favorite (4)
+# : param name_r: bill (5)
+# : param name_r: history (6)
