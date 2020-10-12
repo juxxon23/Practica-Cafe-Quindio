@@ -25,6 +25,7 @@ class Login(MethodView):
             for doc in docs:
                 if doc['doc']['email'] == client_login['email']:
                     if crypt.check_hash(client_login['password'], doc['doc']['password']):
+                        
                         return jsonify({'st': 'ok'}), 200
                     else:
                         return jsonify({'st': 'pass'}), 403

@@ -55,6 +55,30 @@ class Product(MethodView):
             return jsonify({"st": "error"}), 403
         finally:
             pass
+    
+    # Actualizar producto
+    def put(self):
+        try:
+            product_change = request.get_json()
+            print(product_change)
+            cm.connect_service()
+            my_db = cm.connect_db('cafe-db')
+            sdb = 'a'#my_db.sync(my_db, cm)
+            doc_msg = cm.update_doc(my_db,"email","vicente@mail.com",password="password23")
+            disconnect = cm.disconnect_db("cafe-db")
+            if doc_msg == "ok":
+                return jsonify({"st":"ok", "sync": sdb}), 200
+            elif doc_msg == "error":
+                print("hola")
+                return jsonify({"st": "error", "sync": sdb}), 403
+        except:
+            return jsonify({"st":"error"}), 403
+        finally:
+            pass
+
+    # Eliminar producto
+
+
 """
 new_client = Client(
         id_c=product_register['id'],
@@ -67,3 +91,4 @@ message = pm.add(new_client)
 print(message)
 return message
 """
+
