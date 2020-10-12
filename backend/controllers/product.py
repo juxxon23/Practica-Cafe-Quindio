@@ -1,6 +1,6 @@
 from flask.views import MethodView
 from marshmallow import validate
-from validators.product_val import Product
+from validators.product_val import ProductRegister, ProductUpdate
 from db.cloudant.cloudant_manager import CloudantManager
 from flask import jsonify, request
 from helpers.db_parser import DBP
@@ -8,7 +8,8 @@ from db.postgresql.postgresql_manager import PostgresqlManager
 from db.postgresql.model import Client
 
 cm = CloudantManager()
-product_schema = Product()
+product_schema = ProductRegister()
+update_schema = ProductUpdate()
 my_dbp = DBP()
 pm = PostgresqlManager()
 
@@ -29,7 +30,7 @@ class Product(MethodView):
                     'id_p': products[i]['doc']['id_p'],
                 }
             disconnect = cm.disconnect_db("cafe-db")
-            return jsonify({'products': products, 'sync':sdb}), 200
+            return jsonify({'products': products, 'sync': sdb}), 200
         except:
             return jsonify({'st': 'error'}), 403
         finally:
@@ -40,7 +41,7 @@ class Product(MethodView):
         try:
             product_register = request.get_json()
             product_register['role'] = '2'
-            errors = product_schema.validate()####
+            errors = product_schema.validate()
             cm.connect_service()
             my_db = cm.connect_db('cafe-db')
             sdb = my_dbp.sync(my_db, cm)
@@ -55,24 +56,34 @@ class Product(MethodView):
             return jsonify({"st": "error"}), 403
         finally:
             pass
-    
+
     # Actualizar producto
     def put(self):
         try:
+            # Se obtiene el json y se extraen las variables
+            # change_key y change_value, estas serviran como
+            # una especie de indice para realizar busquedas
             product_change = request.get_json()
-            print(product_change)
+            key_item = product_change['change_key']
+            value_item = product_change['change_value']
+            product_change.pop('change_key')
+            product_change.pop('change_value')
+            errors = update_schema.validate(product_change)
+            if errors:
+                return jsonify({'st': errors}), 403
+            # Conexion y actualizacion
             cm.connect_service()
             my_db = cm.connect_db('cafe-db')
-            sdb = 'a'#my_db.sync(my_db, cm)
-            doc_msg = cm.update_doc(my_db,"email","vicente@mail.com",password="password23")
+            sdb = my_dbp.sync(my_db, cm)
+            doc_msg = cm.update_doc(
+                my_db, key_item, value_item, product_change)
             disconnect = cm.disconnect_db("cafe-db")
             if doc_msg == "ok":
-                return jsonify({"st":"ok", "sync": sdb}), 200
+                return jsonify({"st": "ok", "sync": sdb}), 200
             elif doc_msg == "error":
-                print("hola")
                 return jsonify({"st": "error", "sync": sdb}), 403
         except:
-            return jsonify({"st":"error"}), 403
+            return jsonify({"st": "error"}), 403
         finally:
             pass
 
@@ -91,4 +102,3 @@ message = pm.add(new_client)
 print(message)
 return message
 """
-

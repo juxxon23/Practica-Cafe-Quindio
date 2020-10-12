@@ -14,7 +14,7 @@ class Signin(MethodView):
         try:
             # Se reciben los datos y se validan
             client_signin = request.get_json()
-            client_signin['role'] = "client"
+            client_signin['role'] = "1"
             errors = client_schema.validate(client_signin)
             if errors:
                 return jsonify({"st": errors}), 403

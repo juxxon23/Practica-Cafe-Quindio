@@ -16,9 +16,10 @@ class DBP:
                         'email': client.email,
                         'phone': client.phone,
                         'password': client.password,
-                        'role': '1'
+                        'role_c': '1'
                     }
                     msg = cm.add_doc(my_db, client_nosql)
+            print('Sincronizacion 1 completada')
             
             # Sincronizacion de la tabla Appearance
             appearance_temp = pm.get_all(Appearance)
@@ -29,9 +30,10 @@ class DBP:
                         'bio_a': appearance.bio_a,
                         'price': appearance.price,
                         'id_p': appearance.id_p,
-                        'role': '3'
+                        'role_a': '2'
                     }
                     msg = cm.add_doc(my_db, appearance_nosql)
+            print('Sincronizacion 2 completada')
 
             # Sincronizacion de la tabla Product
             product_temp = pm.get_all(Product)
@@ -40,9 +42,10 @@ class DBP:
                     product_nosql = {
                         'name_p': product.name_p,
                         'bio_p': product.bio_p,
-                        'role': '2'
                     }
                     msg = cm.add_doc(my_db, product_nosql)
+            print('Sincronizacion product completada')
+
              # Sincronizacion de la tabla Favorite
             favorite_temp = pm.get_all(Favorite)
             if favorite_temp != []:
@@ -51,9 +54,10 @@ class DBP:
                         'id_f': favorite.id_f,
                         'id_c': favorite.id_c,
                         'id_a': favorite.id_a,
-                        'role': '4'
+                        'role_f': '3'
                     }
                     msg = cm.add_doc(my_db, favorite_nosql)
+            print('Sincronizacion 3 completada')
 
             # Sincronizacion de la tabla Bill
             bill_temp = pm.get_all(Bill)
@@ -65,9 +69,10 @@ class DBP:
                         'id_a': bill.id_a,
                         'quantity': bill.quantity,
                         'total': bill.total,
-                        'role': '5'
+                        'role_b': '5'
                     }
                     msg = cm.add_doc(my_db, bill_nosql)
+            print('Sincronizacion 4 completada')
 
             # Sincronizacion de la tabla History
             history_temp = pm.get_all(History)
@@ -76,9 +81,10 @@ class DBP:
                     history_nosql = {
                         'id_h': history.id_h,
                         'id_b': history.id_b,
-                        'role': '6'
+                        'role_h': '6'
                     }
                     msg = cm.add_doc(my_db, history_nosql)
+            print('Sincronizacion 5 completada')
             return 'ok'
         except:
             return 'error'
