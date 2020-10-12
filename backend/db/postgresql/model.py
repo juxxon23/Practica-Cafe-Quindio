@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+
 class Client(db.Model):
     __tablename__ = "Client"
 
@@ -10,8 +11,10 @@ class Client(db.Model):
     email = db.Column(db.String(20), nullable=False)
     phone = db.Column(db.String(15))
     password = db.Column(db.String(128), nullable=False)
-    favorite_c = db.relationship('Favorite', backref='client_fav', lazy='dynamic', foreign_keys='Favorite.id_c')
-    bill_c = db.relationship('Bill', backref='client_bill', lazy='dynamic', foreign_keys='Bill.id_c')
+    favorite_c = db.relationship(
+        'Favorite', backref='client_fav', lazy='dynamic', foreign_keys='Favorite.id_c')
+    bill_c = db.relationship(
+        'Bill', backref='client_bill', lazy='dynamic', foreign_keys='Bill.id_c')
 
     def __init__(self, id_c, name_c, email, phone, password):
         self.id_c = id_c
@@ -20,18 +23,21 @@ class Client(db.Model):
         self.phone = phone
         self.password = password
 
+
 class Product(db.Model):
     __tablename__ = "Product"
 
     id_p = db.Column(db.String(2), primary_key=True, nullable=False)
     name_p = db.Column(db.String(40), nullable=False)
     bio_p = db.Column(db.String(200))
-    appearance_p = db.relationship('Appearance', backref='category', lazy='dynamic', foreign_keys='Appearance.id_p')
-    
+    appearance_p = db.relationship(
+        'Appearance', backref='category', lazy='dynamic', foreign_keys='Appearance.id_p')
+
     def __init__(self, id_p, name_p, bio_p):
         self.id_p = id_p
         self.name_p = name_p
         self.bio_p = bio_p
+
 
 class Appearance(db.Model):
     __tablename__ = "Appearance"
@@ -40,9 +46,11 @@ class Appearance(db.Model):
     name_a = db.Column(db.String(40), nullable=False)
     bio_a = db.Column(db.String(200))
     price = db.Column(db.Float(), nullable=False)
-    id_p = db.Column(db.String(2), db.ForeignKey('Product.id_p')) 
-    favorite_a = db.relationship('Favorite', backref='appearance_fav', lazy='dynamic', foreign_keys='Favorite.id_a')
-    bill_a = db.relationship('Bill', backref='appearance_bill', lazy='dynamic', foreign_keys='Bill.id_a')
+    id_p = db.Column(db.String(2), db.ForeignKey('Product.id_p'))
+    favorite_a = db.relationship(
+        'Favorite', backref='appearance_fav', lazy='dynamic', foreign_keys='Favorite.id_a')
+    bill_a = db.relationship(
+        'Bill', backref='appearance_bill', lazy='dynamic', foreign_keys='Bill.id_a')
 
     def __init__(self, id_a, name_a, bio_p, price, id_p):
         self.id_a = id_a
@@ -50,6 +58,7 @@ class Appearance(db.Model):
         self.bio_a = bio_a
         self.price = price
         self.id_p = id_p
+
 
 class Favorite(db.Model):
     __tablename__ = "Favorite"
@@ -81,6 +90,7 @@ class Bill(db.Model):
         self.quantity = quantity
         self.total = total
         self.date_b = date_b
+
 
 class History(db.Model):
     __tablename__ = "History"
