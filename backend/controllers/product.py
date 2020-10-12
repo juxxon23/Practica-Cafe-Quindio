@@ -1,5 +1,6 @@
 from flask.views import MethodView
-#from validators.product import ProductRegister
+from marshmallow import validate
+from validators.product_val import Product
 from db.cloudant.cloudant_manager import CloudantManager
 from flask import jsonify, request
 from helpers.db_parser import DBP
@@ -7,6 +8,7 @@ from db.postgresql.postgresql_manager import PostgresqlManager
 from db.postgresql.model import Client
 
 cm = CloudantManager()
+product_schema = Product()
 my_dbp = DBP()
 pm = PostgresqlManager()
 
@@ -38,6 +40,7 @@ class Product(MethodView):
         try:
             product_register = request.get_json()
             product_register['role'] = '2'
+            errors = product_schema.validate()####
             cm.connect_service()
             my_db = cm.connect_db('cafe-db')
             sdb = my_dbp.sync(my_db, cm)
