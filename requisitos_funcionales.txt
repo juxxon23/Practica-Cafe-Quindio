@@ -1,3 +1,5 @@
+Descripcion
+-------------------------------------
 Empresa cafe del Quindio
 
 Producto: Cafe ADSI 
@@ -20,5 +22,7 @@ NM9
 1.cliente: registro, login.
 3.perfil del cliente: consulta de pedidos eliminarlos, actualizar, cambiar.
 2.pedidos del producto, 2 tipos de productos: añadir pedido, eliminar pedido, actualizar pedido, consultar pedido.
+
+-------------------------------------
 
 

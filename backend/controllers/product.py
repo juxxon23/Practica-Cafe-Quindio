@@ -1,11 +1,9 @@
 from flask.views import MethodView
-from marshmallow import validate
 from validators.product_val import ProductRegister, ProductUpdate
 from db.cloudant.cloudant_manager import CloudantManager
 from flask import jsonify, request
 from helpers.db_parser import DBP
 from db.postgresql.postgresql_manager import PostgresqlManager
-from db.postgresql.model import Client
 
 cm = CloudantManager()
 product_schema = ProductRegister()
@@ -21,7 +19,7 @@ class Product(MethodView):
             cm.connect_service()
             my_db = cm.connect_db('cafe-db')
             sdb = my_dbp.sync(my_db, cm)
-            products = cm.get_query_by(my_db, '2', 'role')
+            products = cm.get_query_by(my_db, '2', 'role_a')
             for i in range(len(products)):
                 products[i] = {
                     'name_a': products[i]['doc']['name_a'],
@@ -33,15 +31,15 @@ class Product(MethodView):
             return jsonify({'products': products, 'sync': sdb}), 200
         except:
             return jsonify({'st': 'error'}), 403
-        finally:
-            pass
 
     # agregar producto
     def post(self):
         try:
             product_register = request.get_json()
-            product_register['role'] = '2'
+            product_register['role_a'] = '2'
             errors = product_schema.validate()
+            if errors:
+                return jsonify({'st': errors}), 403
             cm.connect_service()
             my_db = cm.connect_db('cafe-db')
             sdb = my_dbp.sync(my_db, cm)
@@ -53,9 +51,8 @@ class Product(MethodView):
                 print("elif")
                 return jsonify({"st": "error", "sync": sdb}), 403
         except:
+            # Falta agregar respaldo postgresql
             return jsonify({"st": "error"}), 403
-        finally:
-            pass
 
     # Actualizar producto
     def put(self):
@@ -83,11 +80,13 @@ class Product(MethodView):
             elif doc_msg == "error":
                 return jsonify({"st": "error", "sync": sdb}), 403
         except:
+            # Falta agregar respaldo postgresql
             return jsonify({"st": "error"}), 403
-        finally:
-            pass
+
 
     # Eliminar producto
+    def delete(self):
+        pass
 
 
 """

@@ -23,9 +23,9 @@ class PostgresqlManager:
         except:
             return 'error'
 
-    def delete(self, id_del):
+    def delete(self, doc):
         try:
-            db.session.delete(id_del)
+            db.session.delete(doc)
             db.session.commit()
             return 'ok'
         except SQLAlchemyError as e:
@@ -41,4 +41,3 @@ class PostgresqlManager:
             return e
         except:
             return 'error'
-

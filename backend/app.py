@@ -14,3 +14,4 @@ app.add_url_rule(client['login'], view_func=client['view_func_login'])
 
 # Product routes
 app.add_url_rule(product['product'], view_func=product['view_func_product'])
+
