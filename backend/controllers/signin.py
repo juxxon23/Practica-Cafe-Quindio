@@ -3,24 +3,29 @@ from flask import request, jsonify
 from helpers.crypt import Crypt
 from validators.client_val import ClientSignin
 from db.cloudant.cloudant_manager import CloudantManager
+from db.postgresql.model import Client
+from db.postgresql.postgresql_manager import PostgresqlManager
+import random
 
 client_schema = ClientSignin()
 cm = CloudantManager()
+pm = PostgresqlManager()
 crypt = Crypt()
 
 
 class Signin(MethodView):
     def post(self):
+        client_signin = request.get_json()
+        client_signin['role_c'] = "1"
+        errors = client_schema.validate(client_signin)
+        if errors:
+            return jsonify({"st": errors}), 403
         try:
-            # Se reciben los datos y se validan
-            client_signin = request.get_json()
-            client_signin['role'] = "1"
-            errors = client_schema.validate(client_signin)
-            if errors:
-                return jsonify({"st": errors}), 403
             # Se conecta a la db y se agrega el doc
-            cm.connect_service()
+            conn = cm.connect_service()
             my_db = cm.connect_db('cafe-db')
+            if my_db == "error":
+                raise Exception
             # Se encripta la contrasena y se agrega el documento
             client_signin['password'] = crypt.hash_string(
                 client_signin['password'])
@@ -29,8 +34,15 @@ class Signin(MethodView):
             if doc_msg == "ok":
                 return jsonify({"st": "ok"}), 200
             elif doc_msg == "error":
-                print("elif")
                 return jsonify({"st": "error"}), 403
         except:
-            return jsonify({"st": "error"}), 403
+            new_client = Client(
+                id_c=random.randint(0,1000000000),
+                name_c=client_signin['name_c'],
+                email=client_signin['email'],
+                phone=client_signin['phone'],
+                password=crypt.hash_string(client_signin['password']),
+                role_c=client_signin['role_c'])
+            msg = pm.add(new_client)
+            return jsonify({"st": "local"}), 200
 

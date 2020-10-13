@@ -4,6 +4,8 @@ from db.cloudant.cloudant_manager import CloudantManager
 from flask import jsonify, request
 from helpers.db_parser import DBP
 from db.postgresql.postgresql_manager import PostgresqlManager
+from db.postgresql.model import Appearance
+import random
 
 cm = CloudantManager()
 product_schema = ProductRegister()
@@ -34,25 +36,33 @@ class Product(MethodView):
 
     # agregar producto
     def post(self):
+        product_register = request.get_json()
+        product_register['role_a'] = '2'
+        errors = product_schema.validate()
+        if errors:
+            return jsonify({'st': errors}), 403
         try:
-            product_register = request.get_json()
-            product_register['role_a'] = '2'
-            errors = product_schema.validate()
-            if errors:
-                return jsonify({'st': errors}), 403
             cm.connect_service()
             my_db = cm.connect_db('cafe-db')
+            if my_db == "error":
+                raise Exception
             sdb = my_dbp.sync(my_db, cm)
             doc_msg = cm.add_doc(my_db, product_register)
             disconnect = cm.disconnect_db("cafe-db")
             if doc_msg == "ok":
                 return jsonify({"st": "ok", "sync": sdb}), 200
             elif doc_msg == "error":
-                print("elif")
                 return jsonify({"st": "error", "sync": sdb}), 403
         except:
-            # Falta agregar respaldo postgresql
-            return jsonify({"st": "error"}), 403
+            new_product = Product(
+                id_a = random.randint(0, 99),
+                name_a = product_register['name_a'],
+                bio_a = product_register['bio_a'],
+                price = product_register['price'],
+                id_p = product_register['id_p'],
+                role_a = product_register['role_a'])
+            msg = pm.add(new_product)
+            return jsonify({"st": "local"}), 200
 
     # Actualizar producto
     def put(self):
@@ -87,17 +97,3 @@ class Product(MethodView):
     # Eliminar producto
     def delete(self):
         pass
-
-
-"""
-new_client = Client(
-        id_c=product_register['id'],
-        name_c=product_register['name_c'],
-        email=product_register['email'],
-        phone=product_register['phone'],
-        password=product_register['password'],
-        role_c=product_register['role'])
-message = pm.add(new_client)
-print(message)
-return message
-"""
