@@ -26,6 +26,12 @@ class Signin(MethodView):
             my_db = cm.connect_db('cafe-db')
             if my_db == "error":
                 raise Exception
+            docs = cm.get_query_by(my_db, client_signin['email'], 'email')
+            if docs != []:
+                doc = docs[0]
+                if client_signin['email'] == doc['doc']['email']:
+                    return jsonify({"st": "existe"})
+
             # Se encripta la contrasena y se agrega el documento
             client_signin['password'] = crypt.hash_string(
                 client_signin['password'])

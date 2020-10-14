@@ -21,7 +21,7 @@ class Product(MethodView):
             cm.connect_service()
             my_db = cm.connect_db('cafe-db')
             print(my_db)
-            """sdb = my_dbp.sync(my_db, cm)
+            sdb = my_dbp.sync(my_db, cm)
             products = cm.get_query_by(my_db, '2', 'role_a')
             for i in range(len(products)):
                 products[i] = {
@@ -32,7 +32,7 @@ class Product(MethodView):
                 }
             disconnect = cm.disconnect_db("cafe-db")
             return jsonify({'products': products, 'sync': sdb}), 200
-            """
+            
             return jsonify({'st':'ok'})
         except:
             return jsonify({'st': 'error'}), 403
